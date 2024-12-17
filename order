@@ -1,0 +1,105 @@
+# menu.py
+
+# Step 1: Menu items dictionary
+menu_items = {
+    1: {"Item name": "Apple", "Price": 0.49},
+    2: {"Item name": "Tea - Thai iced", "Price": 3.99},
+    3: {"Item name": "Fried banana", "Price": 4.49},
+    4: {"Item name": "Spring roll", "Price": 2.99},
+    5: {"Item name": "Pad Thai", "Price": 7.99},
+}
+
+# Step 2: Function to display menu
+def display_menu():
+    print("\nWelcome to the Food Truck! Here's the menu:")
+    print("--------------------------------------------")
+    for key, item in menu_items.items():
+        print(f"{key}. {item['Item name']} - ${item['Price']:.2f}")
+    print("--------------------------------------------")
+
+# Step 3: Initialize order list
+order = []
+
+# Step 4: Ordering loop
+def take_order():
+    place_order = True
+    while place_order:
+        display_menu()
+        menu_selection = input("Please enter the number of the item you'd like to order: ")
+
+        # Input validation for menu selection
+        if not menu_selection.isdigit():
+            print("Invalid input! Please enter a number.\n")
+            continue
+
+        menu_selection = int(menu_selection)
+        if menu_selection not in menu_items.keys():
+            print("Invalid choice! That item is not on the menu.\n")
+            continue
+
+        # Extract item details
+        selected_item = menu_items[menu_selection]
+        item_name = selected_item["Item name"]
+        price = selected_item["Price"]
+
+        # Ask for quantity
+        quantity_input = input(f"How many '{item_name}' would you like? (Default is 1): ")
+        if not quantity_input.isdigit():
+            quantity = 1
+        else:
+            quantity = int(quantity_input)
+
+        # Add to order list
+        order.append({
+            "Item name": item_name,
+            "Price": price,
+            "Quantity": quantity
+        })
+
+        print(f"{quantity} x '{item_name}' added to your order!\n")
+
+        # Ask if they want to keep ordering
+        while True:
+            keep_ordering = input("Would you like to order more? (y/n): ").lower()
+            match keep_ordering:
+                case "y":
+                    break
+                case "n":
+                    print("Thank you for your order!\n")
+                    place_order = False
+                    break
+                case _:
+                    print("Invalid input. Please enter 'y' or 'n'.")
+
+# Step 5: Print receipt
+def print_receipt():
+    print("\nHere is your receipt:")
+    print("------------------------------------------------")
+    print(f"{'Item Name':<25} | {'Price':<7} | {'Quantity':<7}")
+    print("------------------------------------------------")
+
+    for item in order:
+        item_name = item["Item name"]
+        price = f"${item['Price']:.2f}"
+        quantity = item["Quantity"]
+
+        # Formatting spaces
+        spaces_name = " " * (25 - len(item_name))
+        spaces_price = " " * (7 - len(price))
+        spaces_quantity = " " * (7 - len(str(quantity)))
+
+        print(f"{item_name}{spaces_name} | {price}{spaces_price} | {quantity}{spaces_quantity}")
+
+    # Calculate total price using list comprehension
+    total_price = sum([item["Price"] * item["Quantity"] for item in order])
+    print("------------------------------------------------")
+    print(f"{'Total Price':<25} | ${total_price:.2f}")
+    print("------------------------------------------------")
+
+# Step 6: Run the program
+def main():
+    take_order()
+    print_receipt()
+
+if __name__ == "__main__":
+    main()
